@@ -1,7 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const conncectDB = require('./config/conectDb');
 const colors = require('colors');
+const conncectDB = require('./config/connectDB');
+
 
 
 // Initializing express

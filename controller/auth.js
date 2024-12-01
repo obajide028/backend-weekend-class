@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const { use } = require("../routes/auth");
 
 // Register function
 const register = async (req, res) => {
@@ -70,7 +71,43 @@ const login = async (req, res) => {
     .json({success: true, message: "Login successful", user})
 }
 
+const updateDetails = async (req, res) => {
+    const fieldsToUpdate = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName
+    };
+   const user = await User.findByIdAndUpdate(
+    req.params.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true,
+   });
+
+   return res.status(200)
+           .json({success: true,
+             message: "User Details updated successfully", 
+             user})
+
+}
+
+const deleteUser = async(req, res) => {
+    const user = await User.findByIdAndDelete(req.params.id);
+    
+    res.status(200).json({success: true, message: "User deleted"})
+}
+
 module.exports = {
     register,
-    login
+    login,
+    updateDetails,
+    deleteUser  
 }
+
+
+/**
+ * POST
+ * PUT
+ * DELETE
+ * 
+ * -- GET
+ * 
+ */
