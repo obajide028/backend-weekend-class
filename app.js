@@ -19,8 +19,10 @@ app.use(express.json());
 
 // mount routes
 const auth = require('./routes/auth');
+const blog = require('./routes/blog')
 
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/blog', blog)
 
 const PORT = 5000;
 

@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const { use } = require("../routes/auth");
 
 // Register function
 const register = async (req, res) => {
@@ -26,8 +25,10 @@ const register = async (req, res) => {
             password
         });
 
+        const token = user.getSignedJwtToken();
+
         return res.status(201)
-        .json({ success: true, message: "user created successfully", user})
+        .json({ success: true, message: "user created successfully", token})
     } catch(err){
         console.error("something went wrong:", err);
         res.status(500).json({ error: "Something went wrong" });
@@ -52,6 +53,7 @@ const login = async (req, res) => {
       .json({ success: false, message: "Please input your password "})
   }
 
+  //Check if the user is registered in the database
   const user = await User.findOne({ email })
   if(!user) {
     return res 
@@ -67,8 +69,9 @@ const login = async (req, res) => {
        .json({ success: false, message: "Invalid Password"})
    }
 
+   const token = user.getSignedJwtToken();
    return res.status(200)
-    .json({success: true, message: "Login successful", user})
+    .json({success: true, message: "Login successful", token})
 }
 
 const updateDetails = async (req, res) => {
@@ -89,17 +92,50 @@ const updateDetails = async (req, res) => {
 
 }
 
+const updatePassword = async(req, res) => {
+    const user = await User.findById(req.params.id).select("+password");
+
+    //check current password
+    if(!(await user.matchPassword(req.body.currentPassword))){
+        return res
+             .status(401)
+             .json({ success: false, message: "Password is incorrect"})
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    res.status(200).json({success: true, message: "Password updated"})
+}
+
 const deleteUser = async(req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     
     res.status(200).json({success: true, message: "User deleted"})
 }
 
+// Fetch a single user
+const getUser = async(req, res) => {
+    const user = await User.findById(req.params.id);
+    
+    res.status(200).json({ success: true, message: "User details retrieved", user})
+}
+
+// fetch all users in the db
+const getUsers = async (req, res) => {
+    const users = await User.find();
+
+    res.status(200).json({success: true, message: "Users details retrieved", users})
+}
+
 module.exports = {
     register,
     login,
     updateDetails,
-    deleteUser  
+    deleteUser,
+    getUser,
+    getUsers,
+    updatePassword  
 }
 
 
