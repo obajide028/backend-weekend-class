@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, updateDetails, deleteUser, getUser, getUsers, updatePassword } = require('../controller/auth');
+const { register, login, updateDetails, deleteUser, getUser, getUsers, updatePassword, forgotPassword, resetPassword } = require('../controller/auth');
 
 const router = express.Router();
 
@@ -10,6 +10,8 @@ router.delete('/delete/:id', deleteUser)
 router.get('/user/:id', getUser)
 router.get('/users', getUsers)
 router.put('/updatePassword/:id', updatePassword)
+router.post('/forgotpassword', forgotPassword)
+router.put('/resetpassword/:resettoken', resetPassword)
 
 
 

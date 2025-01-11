@@ -3,8 +3,6 @@ const dotenv = require('dotenv');
 const colors = require('colors');
 const conncectDB = require('./config/connectDB');
 
-
-
 // Initializing express
 const app = express();
 
@@ -24,7 +22,7 @@ const blog = require('./routes/blog')
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/blog', blog)
 
-const PORT = 5000;
+const PORT =  process.env.PORT || 5000;
 
 const server = app.listen(PORT, 
     console.log(`Server running on ${PORT}`.yellow.bold)
